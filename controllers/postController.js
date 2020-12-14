@@ -1,3 +1,5 @@
+'use strict'
+
 const Post = require('../models/Post');
 
 const postController = (app) => {
@@ -23,6 +25,24 @@ const postController = (app) => {
       res.send("Please provide title and url in the post");
     }
   });
+
+  app.put('/posts/:id/upvote', (req, res) => {
+    Post.upVote(req.params.id, (err ,result) => {
+      if (err) {
+        return console.log(`Cannot upvote post in db: ${err}`);
+      }
+      res.send(result);
+    });
+  })
+
+  app.put('/posts/:id/downvote', (req, res) => {
+    Post.downVote(req.params.id, (err ,result) => {
+      if (err) {
+        return console.log(`Cannot downvote post in db: ${err}`);
+      }
+      res.send(result);
+    });
+  })
 }
 
 module.exports = {postController,};
