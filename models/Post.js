@@ -7,7 +7,7 @@ let Post = function(post) {
   this.url = post.url;
 }
 
-Post.listAll = function(result) {
+Post.listAll = (result) => {
   const query = 'SELECT * FROM post';
   db.query(query, (err, posts) => {
     if (err) {
@@ -18,7 +18,7 @@ Post.listAll = function(result) {
   })
 }
 
-Post.addPost = function(post, res) {
+Post.addPost = (post, res) => {
   const isoTimestamp = new Date().toISOString();
   const timestamp = isoTimestamp.replace('T', " ").replace(/\..*/, "");
   const score = 0;
