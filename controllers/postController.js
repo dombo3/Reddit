@@ -3,6 +3,17 @@
 const Post = require('../models/Post');
 
 const postController = (app) => {
+
+  app.use(function(req, res, next) {
+    const allowedOrigins = ['http://127.0.0.1:5500', 'http://localhost:5500'];
+    const origin = req.get('Origin');
+    if (allowedOrigins.includes(origin)) {
+      res.set('Access-Control-Allow-Origin', origin);
+      res.set('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    next();
+  });
+
   app.get('/posts', (req, res) => {
     Post.listAll((err, result) => {
       if (err) {
