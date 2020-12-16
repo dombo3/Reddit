@@ -4,7 +4,7 @@ const db = require('../db');
 
 let Post = function(post) {
   this.title = post.title;
-  this.url = post.url;
+  this.url = post.url || "";
 }
 
 Post.listAll = (result) => {
@@ -22,7 +22,7 @@ Post.addPost = (post, res) => {
   const isoTimestamp = new Date().toISOString();
   const timestamp = isoTimestamp.replace('T', " ").replace(/\..*/, "");
   const score = 0;
-  const query = `INSERT INTO post (title, url, timestamp, score) VALUES ("?", "?", "${timestamp}", ${score})`;
+  const query = `INSERT INTO post (title, url, timestamp, score) VALUES (?, ?, "${timestamp}", ${score})`;
   db.query(query, [post.title, post.url], (err, result) => {
     if (err) {
       console.error(`Cannot insert data to db ${err.toString()}`);

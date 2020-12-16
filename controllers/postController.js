@@ -3,17 +3,6 @@
 const Post = require('../models/Post');
 
 const postController = (app) => {
-
-  app.use(function(req, res, next) {
-    const allowedOrigins = ['http://127.0.0.1:5500', 'http://localhost:5500'];
-    const origin = req.get('Origin');
-    if (allowedOrigins.includes(origin)) {
-      res.set('Access-Control-Allow-Origin', origin);
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-    }
-    next();
-  });
-
   app.get('/posts', (req, res) => {
     Post.listAll((err, result) => {
       if (err) {
@@ -24,7 +13,7 @@ const postController = (app) => {
   });
 
   app.post('/posts', (req, res) => {
-    if (req.body.title && req.body.url) {
+    if (req.body.title) {
       const newPost = new Post(req.body);
       Post.addPost(newPost, (err, result) => {
         if (err) {
@@ -33,7 +22,7 @@ const postController = (app) => {
         res.send(result);
       });
     } else {
-      res.send("Please provide title and url in the post");
+      res.send("Please provide title in the post");
     }
   });
 
@@ -42,7 +31,7 @@ const postController = (app) => {
       if (err) {
         return console.log(`Cannot upvote post in db: ${err}`);
       }
-      res.send(result);
+      res.send(result[0]);
     });
   })
 
@@ -51,7 +40,7 @@ const postController = (app) => {
       if (err) {
         return console.log(`Cannot downvote post in db: ${err}`);
       }
-      res.send(result);
+      res.send(result[0]);
     });
   })
 }
