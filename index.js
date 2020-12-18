@@ -13,7 +13,7 @@ app.use(function(req, res, next) {
   const origin = req.get('Origin');
   if (allowedOrigins.includes(origin)) {
     res.set('Access-Control-Allow-Origin', origin);
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Username');
     res.set('Access-Control-Allow-Methods', '*');
   }
   next();
