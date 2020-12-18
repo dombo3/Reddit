@@ -5,7 +5,7 @@ const Post = require('../models/Post');
 const postController = (app) => {
   
   app.get('/posts/:id', (req, res) => {
-    Post.get(req.params.id, (err, post) => {
+    Post.get(req.params.id, req.get("Username"), (err, post) => {
       if (err) {
         return console.log(`Cannot get post from db: ${err}`);
       }
@@ -18,7 +18,7 @@ const postController = (app) => {
   })
   
   app.get('/posts', (req, res) => {
-    Post.listAll((err, result) => {
+    Post.listAll(req.get("Username"), (err, result) => {
       if (err) {
         return console.log(`Cannot get posts from db: ${err}`);
       }
@@ -29,7 +29,7 @@ const postController = (app) => {
   app.post('/posts', (req, res) => {
     if (req.body.title) {
       const newPost = new Post(req.body);
-      Post.create(newPost, (err, result) => {
+      Post.create(newPost, req.get("Username"), (err, result) => {
         if (err) {
           return console.log(`Cannot insert post to db: ${err}`);
         }
@@ -44,9 +44,12 @@ const postController = (app) => {
     const id = req.params.id;
     const post = new Post(req.body);
     
-    Post.update(post, id, (error, result) => {
+    Post.update(post, id, req.get("Username"), (error, result) => {
       if (error) {
-        return console.log(`Cannot update post in db: ${err}`);
+        if (error === 401) {
+          res.status(401).end();
+        }
+        return console.log(`Cannot update post in db: ${error}`);
       }
       res.send(result);
     });
@@ -71,8 +74,11 @@ const postController = (app) => {
   })
 
   app.delete('/posts/:id', (req, res) => {
-    Post.delete(req.params.id, (err, result) => {
+    Post.delete(req.params.id, req.get("Username"), (err, result) => {
       if (err) {
+        if (err === 401) {
+          res.status(401).end();
+        }
         return console.log(`Cannot delete post from db: ${err}`);
       }
       res.status(204).end();
